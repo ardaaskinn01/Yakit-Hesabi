@@ -33,10 +33,10 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-     - assets/images/benzin.png
+     - assets/images/benzin.jpg
 
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/images/benzin.png"
+  image_path: "assets/images/benzin.jpg"
   remove_alpha_ios: true
