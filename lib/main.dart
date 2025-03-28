@@ -30,6 +30,7 @@ class FuelCalculator extends StatefulWidget {
 
 class _FuelCalculatorState extends State<FuelCalculator> {
   final TextEditingController _controller = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
   double? result;
   int? selectedPercentage;
 
@@ -60,90 +61,38 @@ class _FuelCalculatorState extends State<FuelCalculator> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFF006400), Color(0xFF7CFC00)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+      body: GestureDetector(
+        onTap: () {
+          // Klavyeyi kapat
+          FocusScope.of(context).unfocus();
+        },
+        child: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF006400), Color(0xFF7CFC00)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
           ),
-        ),
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              children: [
-                const Text(
-                  'Yakıt Hesaplayıcı',
-                  style: TextStyle(
-                      fontSize: 30,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 30),
-                Container(
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.9),
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 8,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
+          child: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                children: [
+                  const Text(
+                    'Yakıt Hesaplayıcı',
+                    style: TextStyle(
+                        fontSize: 30,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold),
                   ),
-                  child: TextField(
-                    controller: _controller,
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                      labelText: 'Litre miktarı girin',
-                      border: InputBorder.none,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 30),
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Wrap(
-                      spacing: 10,
-                      runSpacing: 10,
-                      alignment: WrapAlignment.center,
-                      children: List.generate(
-                        16,
-                            (index) {
-                          int eValue = 5 * (index + 2);
-                          return ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 14, horizontal: 20),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                              backgroundColor: Colors.white,
-                              foregroundColor: Colors.green,
-                              elevation: 3,
-                            ),
-                            onPressed: () => calculateFuel(eValue),
-                            child: Text(
-                              'E$eValue',
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 16),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                if (result != null)
+                  const SizedBox(height: 30),
                   Container(
+                    padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                     decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.9),
                       borderRadius: BorderRadius.circular(20),
-                      color: Colors.white.withOpacity(0.95),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withOpacity(0.1),
@@ -152,53 +101,112 @@ class _FuelCalculatorState extends State<FuelCalculator> {
                         ),
                       ],
                     ),
-                    padding: const EdgeInsets.all(20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Sonuçlar',
-                          style: TextStyle(
-                            fontSize: 24,
-                            color: Colors.green,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const Divider(thickness: 1, color: Colors.grey),
-                        const SizedBox(height: 10),
-                        Text(
-                          'Girilen Miktar: ${_controller.text} litre',
-                          style: const TextStyle(
-                              fontSize: 18, color: Colors.black87),
-                        ),
-                        Text(
-                          'Seçilen Oran: E$selectedPercentage\n',
-                          style: const TextStyle(
-                              fontSize: 18, color: Colors.black87),
-                        ),
-                        Text(
-                          'Ek Etanol Miktarı ${(double.parse(_controller.text) * ((selectedPercentage! - 5) / 100)).toStringAsFixed(2)} litre',
-                          style: const TextStyle(
-                              fontSize: 18,
-                              color: Colors.black87,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ],
+                    child: TextField(
+                      controller: _controller,
+                      focusNode: _focusNode,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        labelText: 'Litre miktarı girin',
+                        border: InputBorder.none,
+                      ),
                     ),
                   ),
-                const SizedBox(height: 30),
-              ],
+                  const SizedBox(height: 30),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Wrap(
+                        spacing: 10,
+                        runSpacing: 10,
+                        alignment: WrapAlignment.center,
+                        children: List.generate(
+                          16,
+                              (index) {
+                            int eValue = 5 * (index + 2);
+                            return ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 14, horizontal: 20),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                                backgroundColor: Colors.white,
+                                foregroundColor: Colors.green,
+                                elevation: 3,
+                              ),
+                              onPressed: () => calculateFuel(eValue),
+                              child: Text(
+                                'E$eValue',
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 16),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  if (result != null)
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.white.withOpacity(0.95),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 8,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Sonuçlar',
+                            style: TextStyle(
+                              fontSize: 24,
+                              color: Colors.green,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const Divider(thickness: 1, color: Colors.grey),
+                          const SizedBox(height: 10),
+                          Text(
+                            'Girilen Miktar: ${_controller.text} litre',
+                            style: const TextStyle(
+                                fontSize: 18, color: Colors.black87),
+                          ),
+                          Text(
+                            'Seçilen Oran: E$selectedPercentage\n',
+                            style: const TextStyle(
+                                fontSize: 18, color: Colors.black87),
+                          ),
+                          Text(
+                            'Ek Etanol Miktarı ${(double.parse(_controller.text) * ((selectedPercentage! - 5) / 100)).toStringAsFixed(2)} litre',
+                            style: const TextStyle(
+                                fontSize: 18,
+                                color: Colors.black87,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    ),
+                  const SizedBox(height: 30),
+                ],
+              ),
             ),
           ),
         ),
       ),
     );
   }
+
   void showCoolMessage(String message, Color color) {
     final overlay = Overlay.of(context);
     final screenHeight = MediaQuery.of(context).size.height;
 
-    // 0.55 oranı: ekranın %55'inde baloncuk çıkar
     final fixedTop = screenHeight * 0.55;
 
     final overlayEntry = OverlayEntry(
@@ -214,7 +222,6 @@ class _FuelCalculatorState extends State<FuelCalculator> {
       overlayEntry.remove();
     });
   }
-
 }
 
 class CoolBubble extends StatefulWidget {
